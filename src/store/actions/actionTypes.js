@@ -1,0 +1,4 @@
+export const ADD_EVENT_REPORT = 'ADD_EVENT_REPORT';
+export const REMOVE_EVENT_REPORT = 'REMOVE_EVENT_REPORT';
+
+
