@@ -8,13 +8,10 @@ import Typography from '@material-ui/core/Typography';
 import IconButton from '@material-ui/core/IconButton';
 import MenuIcon from '@material-ui/icons/Menu';
 import Drawer from './Drawer'
+import { useHistory } from 'react-router-dom';
 
 const drawerWidth = 240;
-
 const useStyles = makeStyles((theme) => ({
-  root: {
-    display: 'flex',
-  },
   appBar: {
     transition: theme.transitions.create(['margin', 'width'], {
       easing: theme.transitions.easing.sharp,
@@ -34,27 +31,12 @@ const useStyles = makeStyles((theme) => ({
   },
   hide: {
     display: 'none',
-  },
-  content: {
-    flexGrow: 1,
-    padding: theme.spacing(3),
-    transition: theme.transitions.create('margin', {
-      easing: theme.transitions.easing.sharp,
-      duration: theme.transitions.duration.leavingScreen,
-    }),
-    marginLeft: -drawerWidth,
-  },
-  contentShift: {
-    transition: theme.transitions.create('margin', {
-      easing: theme.transitions.easing.easeOut,
-      duration: theme.transitions.duration.enteringScreen,
-    }),
-    marginLeft: 0,
-  },
+  }
 }));
 
 export default function PersistentDrawerLeft(props) {
   const classes = useStyles();
+  const history = useHistory();
   const [open, setOpen] = useState(false);
 
   const handleDrawerOpen = () => {
@@ -64,9 +46,8 @@ export default function PersistentDrawerLeft(props) {
   const handleDrawerClose = () => {
     setOpen(false);
   };
-
   return (
-    <div className={classes.root}>
+    <>
       <CssBaseline />
       <AppBar
         position="fixed"
@@ -84,7 +65,10 @@ export default function PersistentDrawerLeft(props) {
           >
             <MenuIcon />
           </IconButton>
-          <Typography variant="h6" noWrap>
+          <Typography
+            variant="h6"
+            noWrap
+            onClick={() => history.push('/')}>
             Court Secure
           </Typography>
         </Toolbar>
@@ -93,9 +77,6 @@ export default function PersistentDrawerLeft(props) {
         open={open}
         handleDrawerClose={handleDrawerClose}
       />
-      <main className={!open ? classes.content : classes.contentShift}>
-        {props.children}
-      </main>
-    </div>
+    </>
   );
 }

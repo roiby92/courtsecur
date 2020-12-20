@@ -54,7 +54,7 @@ export default function PersistentDrawerLeft(props) {
     };
 
     return (
-        <div className={classes.root}>
+        <>
             <Drawer
                 className={classes.drawer}
                 variant="persistent"
@@ -81,6 +81,6 @@ export default function PersistentDrawerLeft(props) {
                     ))}
                 </List>
             </Drawer>
-        </div>
+        </>
     );
 }

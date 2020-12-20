@@ -1,9 +1,25 @@
 import React from 'react'
+import { makeStyles } from '@material-ui/core/styles';
 import AppNavBar from './AppNavBar'
-const Layout = () => {
+
+const useStyles = makeStyles(() => ({
+    root: {
+        display: 'flex',
+    },
+    content: {
+        flexGrow: 0.5,
+        marginTop: '50px',
+    }
+}));
+const Layout = (props) => {
+    const classes = useStyles();
+
     return (
-        <div>
-            <AppNavBar />
+        <div className={classes.root}>
+            <AppNavBar/>
+            <main className={classes.content }>
+                {props.children}
+            </main>
         </div>
     )
 }

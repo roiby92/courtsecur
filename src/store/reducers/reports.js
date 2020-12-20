@@ -1,28 +1,33 @@
 import * as actionsTypes from '../actions/actionTypes'
 
 const initalState = {
-    eventsReports: [],
+    reports: [],
     loading: false,
 
 }
 
 const reducer = (state = initalState, action) => {
     switch (action.type) {
-        case actionsTypes.ADD_EVENT_REPORT:
+        case actionsTypes.EVENT_REPORT_START:
             return {
                 ...state,
                 loading: true
             };
-        case actionsTypes.REMOVE_EVENT_REPORT:
-            const newOrder = {
-                ...action.orderData,
-                id: action.orderId
+        case actionsTypes.EVENT_REPORT_SUCCESS:
+            const newReport = {
+                ...action.reportData,
+                id: action.reportId
             };
             return {
                 ...state,
                 loading: false,
-                orders: state.orders.concat(newOrder)
+                reports: state.reports.concat(newReport)
             };
+        case actionsTypes.EVENT_REPORT_FAIL:
+            return {
+                ...state,
+                loading: false
+            }
         default:
             return state;
     }
