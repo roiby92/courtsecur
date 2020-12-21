@@ -25,7 +25,7 @@ export const insertReportStart = () => {
 export const insertReport = (reportData) => {
     return dispatch => {
         dispatch(insertReportStart());
-        axios.post('reports.json', reportData)
+        axios.post('/reports.json', reportData)
             .then(response => {
                 dispatch(insertReportSuccess(response.data.name, reportData))
             })
@@ -33,5 +33,44 @@ export const insertReport = (reportData) => {
                 dispatch(insertReportFail(error))
             });
     }
+}
+export const fetchReportsSuccess = (reports) => {
+    return {
+        type: actionsTypes.FETCH_REPORTS_SUCCESS,
+        reports: reports
+    };
+};
 
+export const fetchReportsFail = (error) => {
+    return {
+        type: actionsTypes.FETCH_REPORTS_FAIL,
+        error: error
+    };
+};
+
+export const fetchReportsStart = () => {
+    return {
+        type: actionsTypes.FETCH_REPORTS_START
+    };
+};
+
+export const fetchReports = () => {
+    return dispatch => {
+        dispatch(fetchReportsStart())
+        axios.get('/reports.json')
+            .then(res => {
+                console.log(res);
+                const fetchedReports = [];
+                for (let key in res.data) {
+                    fetchedReports.push({
+                        ...res.data[key],
+                        id: key
+                    });
+                };
+                dispatch(fetchReportsSuccess(fetchedReports));
+            })
+            .catch(err => {
+                dispatch(fetchReportsFail(err));
+            });
+    }
 }

@@ -1,1 +1,1 @@
-export { insertReport } from './reports';
+export { insertReport,fetchReports } from './reports';
