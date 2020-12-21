@@ -1,0 +1,1 @@
+export { insertReport } from './reports';

@@ -1,5 +1,5 @@
 import * as actionsTypes from './actionTypes'
-import axios from '../../axios-orders'
+import axios from '../../axios-base'
 
 export const insertReportSuccess = (id, report) => {
     return {
@@ -25,7 +25,7 @@ export const insertReportStart = () => {
 export const insertReport = (reportData) => {
     return dispatch => {
         dispatch(insertReportStart());
-        axios.post('/reports.json', reportData)
+        axios.post('reports.json', reportData)
             .then(response => {
                 dispatch(insertReportSuccess(response.data.name, reportData))
             })
