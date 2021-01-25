@@ -1,4 +1,7 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import { useHistory } from 'react-router-dom';
+import { useDispatch, useSelector } from 'react-redux';
+import * as actions from '../store/actions/index'
 import clsx from 'clsx';
 import { makeStyles } from '@material-ui/core/styles';
 import CssBaseline from '@material-ui/core/CssBaseline';
@@ -8,7 +11,7 @@ import Typography from '@material-ui/core/Typography';
 import IconButton from '@material-ui/core/IconButton';
 import MenuIcon from '@material-ui/icons/Menu';
 import Drawer from './Drawer'
-import { useHistory } from 'react-router-dom';
+
 
 const drawerWidth = 240;
 const useStyles = makeStyles((theme) => ({
@@ -38,6 +41,18 @@ export default function PersistentDrawerLeft(props) {
   const classes = useStyles();
   const history = useHistory();
   const [open, setOpen] = useState(false);
+
+  const gards = useSelector(state => state.gards.gards)
+  const auth = useSelector(state => state.auth)
+  const dispatch = useDispatch()
+
+  useEffect(() => {
+    const update = async () => {
+      const gard = gards.find(gard => gard.email === auth.email)
+      dispatch(actions.updateUserData(gard))
+    }
+    update()
+  }, [])
 
   const handleDrawerOpen = () => {
     setOpen(true);

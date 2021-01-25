@@ -38,20 +38,6 @@ export default function PersistentDrawerLeft(props) {
     const theme = useTheme();
     const history = useHistory()
     const { open, handleDrawerClose } = props
-    const pageList = ['Work', 'Reports', 'New Report']
-
-    const goToPage = (index) => {
-        if (index === 0) {
-            history.push('/work');
-        }
-        if (index === 1) {
-            history.push('/reports');
-        }
-        if (index === 2) {
-            history.push('/newreport');
-        }
-        handleDrawerClose();
-    };
 
     return (
         <>
@@ -71,14 +57,15 @@ export default function PersistentDrawerLeft(props) {
                 </div>
                 <Divider />
                 <List>
-                    {pageList.map((text, index) => (
-                        <ListItem button key={text} onClick={()=>goToPage(index)}>
-                            <ListItemIcon>
-                                {index % 2 === 0 ? <InboxIcon /> : <MailIcon />}
-                            </ListItemIcon>
-                            <ListItemText primary={text} />
-                        </ListItem>
-                    ))}
+                    <ListItem button onClick={() => history.push('/')}>
+                        <ListItemText primary='דוחות אירוע' />
+                    </ListItem>
+                    <ListItem button onClick={() => history.push('/gards')}>
+                        <ListItemText primary='מאבטחים' />
+                    </ListItem>
+                    <ListItem button onClick={() => history.push('/pressure')}>
+                        <ListItemText primary='רשימת לחץ' />
+                    </ListItem>
                 </List>
             </Drawer>
         </>

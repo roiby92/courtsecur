@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Button, Grid, MenuItem, TextField } from '@material-ui/core';
 import DateFnsUtils from '@date-io/date-fns';
 import { MuiPickersUtilsProvider, KeyboardDatePicker, } from '@material-ui/pickers'
@@ -7,7 +7,7 @@ import Input from '@material-ui/core/Input';
 import ListItemText from '@material-ui/core/ListItemText';
 import Select from '@material-ui/core/Select';
 import Checkbox from '@material-ui/core/Checkbox';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import * as actions from '../../store/actions/index'
 
 
@@ -33,7 +33,7 @@ const MenuProps = {
 const AddNewReport = () => {
     const classes = useStyles();
     const dispatch = useDispatch()
-
+    
     const [report, setReport] = useState({
         name: '',
         location: '',
@@ -43,8 +43,9 @@ const AddNewReport = () => {
         discription: '',
         summary: ''
     })
-    const headShift = ['Niv', 'Shahar', 'Avishai', 'Asi']
-    const secGards = ['Itai', 'Natali', 'Orel', 'Ori', 'Daniel', 'Almog', 'Ami', 'Yosi', 'DODI', 'olol']
+    const gards = useSelector(state => state.gards.gards)
+    const headShift = gards.filter(g => g.type === '2')
+    const secGards = gards.filter(g => g.type === '3')
 
     const handleChange = (event) => {
         setReport({ ...report, [event.target.name]: event.target.value })
@@ -61,12 +62,12 @@ const AddNewReport = () => {
             justify="space-evenly"
             alignItems="center">
             <Grid item>
-                <h3>Report Form</h3>
+                <h3>דו"ח אירוע</h3>
             </Grid>
             <Grid item>
                 <TextField
                     id="standard"
-                    label="Event Report Name"
+                    label="שם אירוע"
                     name='name'
                     value={report.name}
                     onChange={handleChange}
@@ -75,7 +76,7 @@ const AddNewReport = () => {
             <Grid item>
                 <TextField
                     id="standard-basic"
-                    label="Event Location"
+                    label="מיקום האירוע"
                     name="location"
                     value={report.location}
                     onChange={handleChange}
@@ -86,7 +87,7 @@ const AddNewReport = () => {
                     <KeyboardDatePicker
                         margin="normal"
                         id="date-picker-dialog"
-                        label="Date picker dialog"
+                        label="תאריך האירוע"
                         format="MM/dd/yyyy"
                         value={report.date}
                         onChange={handleDateChange}
@@ -100,15 +101,15 @@ const AddNewReport = () => {
                 <TextField
                     id="standard-select-currency"
                     select
-                    label="Select Shift head"
+                    label="אחראי משמרת"
                     name='shiftHead'
                     value={report.shiftHead}
                     onChange={handleChange}
                     helperText="Please select your currency"
                 >
                     {headShift.map((option) => (
-                        <MenuItem key={option} value={option}>
-                            {option}
+                        <MenuItem key={option} value={option.name}>
+                            {option.name}
                         </MenuItem>
                     ))}
                 </TextField>
@@ -119,17 +120,17 @@ const AddNewReport = () => {
                     id="demo-mutiple-checkbox"
                     className={classes.select}
                     multiple
-                    name='participants'
+                    name='מאבטחים משתתפים'
                     value={report.participants}
                     onChange={handleChange}
                     input={<Input />}
                     renderValue={(selected) => selected.join(', ')}
                     MenuProps={MenuProps}
                 >
-                    {secGards.map((name) => (
-                        <MenuItem key={name} value={name}>
-                            <Checkbox checked={report.participants.indexOf(name) > -1} />
-                            <ListItemText primary={name} />
+                    {secGards.map((gard) => (
+                        <MenuItem key={gard.id} value={gard.name}>
+                            <Checkbox checked={report.participants.indexOf(gard) > -1} />
+                            <ListItemText primary={gard.name} />
                         </MenuItem>
                     ))}
                 </Select>
@@ -137,7 +138,7 @@ const AddNewReport = () => {
             <Grid item>
                 <TextField
                     id="outlined-multiline-static"
-                    label="Event Discription"
+                    label="תיאור האירוע"
                     multiline
                     name='discription'
                     valie={report.discription}
@@ -149,7 +150,7 @@ const AddNewReport = () => {
             <Grid item>
                 <TextField
                     id="outlined-multiline-static"
-                    label="Event Summary"
+                    label="סיכום האירוע ומסקנות"
                     name='summary'
                     value={report.summary}
                     multiline
