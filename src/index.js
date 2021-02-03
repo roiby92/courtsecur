@@ -7,11 +7,18 @@ import { BrowserRouter } from 'react-router-dom'
 import { Provider } from 'react-redux'
 import { createStore, applyMiddleware, compose, combineReducers } from 'redux';
 import reportsReducer from './store/reducers/reports'
+import gardsReducer from './store/reducers/gards'
+import authReducer from './store/reducers/auth'
+import pressureReducer from './store/reducers/pressure'
+
 import thunk from 'redux-thunk'
 
 const composeEnhancers = window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ || compose;
 const rootReducer = combineReducers({
   reports: reportsReducer,
+  gards: gardsReducer,
+  pressure: pressureReducer,
+  auth: authReducer,
 })
 const store = createStore(rootReducer, composeEnhancers(applyMiddleware(thunk)));
 

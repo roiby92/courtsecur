@@ -5,10 +5,9 @@ import AddIcon from '@material-ui/icons/Add';
 import Fab from '@material-ui/core/Fab';
 import Tooltip from '@material-ui/core/Tooltip';
 import { makeStyles } from '@material-ui/core/styles';
-import AddNewReport from '../components/Reports/AddNewReport'
-import ReportCard from '../components/Reports/ReportCard';
+import PressureCard from '../components/Pressure/PressureCard'
+import AddNewPressure from '../components/Pressure/AddNewPressure'
 import { Grid } from '@material-ui/core';
-
 const useStyles = makeStyles((theme) => ({
     div: {
         marginTop: '30px'
@@ -23,12 +22,15 @@ const useStyles = makeStyles((theme) => ({
     }
 }));
 
-const Reports = () => {
+const Pressure = () => {
     const classes = useStyles();
     const [open, setOpen] = useState(false)
-    const reports = useSelector(state => state.reports.reports)
-    const userEmail = useSelector(state => state.auth.email)
+    const pressure = useSelector(state => state.pressure.pressure)
     const dispatch = useDispatch();
+    useEffect(() => {
+        dispatch(actions.fetchPressure())
+    }, [])
+
     const handleOpen = () => {
         setOpen(true)
     }
@@ -40,34 +42,26 @@ const Reports = () => {
     useEffect(() => {
         dispatch(actions.fetchReports())
     }, [])
-    let addButtun
-    if (userEmail === "sharonnoah8@gmail.com") {
-        addButtun = (
+
+    return (
+        <Grid container
+        direction="row"
+        justify="space-evenly"
+        alignItems="center"
+        spacing={3}>
+            {pressure.map(pres => <PressureCard key={pres.id} pressure={pres} />)}
             <Tooltip
-                title='Add New Report'
-                aria-label='Add New Report'
+                title='Add New Pressure'
+                aria-label='Add New Pressure'
                 onClick={handleOpen}
             >
                 <Fab className={classes.absolute} color='primary'>
                     <AddIcon />
                 </Fab>
             </Tooltip>
-        )
-    } else {
-        addButtun = null
-    }
-
-    return (
-        <Grid container
-            direction="row"
-            justify="space-evenly"
-            alignItems="center"
-            spacing={3}>
-            {reports.map(report => <ReportCard key={report.id} report={report} />)}
-            {addButtun}
-            <AddNewReport open={open} handleClose={handleClose} />
+            <AddNewPressure open={open} handleClose={handleClose} />
         </Grid>
     )
 }
 
-export default Reports;
+export default Pressure

@@ -74,3 +74,20 @@ export const fetchReports = () => {
             });
     }
 }
+
+export const deleteReportSuccess = (id) => {
+    return {
+        type: actionsTypes.EVENT_REPORT_DELETE,
+        reportId: id
+    }
+}
+
+export const deleteReport = (id) => {
+    return dispatch => {
+        axios.delete(`/reports/${id}`,{headers : {"Access-Control-Allow-Origin": "*"}})
+            .then(() => {
+                dispatch(deleteReportSuccess(id))
+            })
+            .catch(err => console.log(err.message))
+    }
+}
