@@ -1,6 +1,7 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import { Button, Grid, MenuItem, TextField } from '@material-ui/core';
 import DateFnsUtils from '@date-io/date-fns';
+import Dialog from '@material-ui/core/Dialog'
 import { MuiPickersUtilsProvider, KeyboardDatePicker, } from '@material-ui/pickers'
 import { makeStyles } from '@material-ui/core/styles';
 import Input from '@material-ui/core/Input';
@@ -30,12 +31,15 @@ const MenuProps = {
     },
 };
 
-const AddNewReport = () => {
+const AddNewReport = (props) => {
     const classes = useStyles();
     const dispatch = useDispatch()
-    
+
+    const { open, handleClose } = props
+
     const [report, setReport] = useState({
         name: '',
+        type: '',
         location: '',
         date: new Date(),
         shiftHead: '',
@@ -46,6 +50,7 @@ const AddNewReport = () => {
     const gards = useSelector(state => state.gards.gards)
     const headShift = gards.filter(g => g.type === '2')
     const secGards = gards.filter(g => g.type === '3')
+    const events = ['רפואי', 'בריחת עצור', 'לחצן מצוקה', 'שריפה', 'פיגוע המוני', 'חפץ חשוד', 'התפרעות', 'הפרת סדר', 'אחר']
 
     const handleChange = (event) => {
         setReport({ ...report, [event.target.name]: event.target.value })
@@ -56,118 +61,151 @@ const AddNewReport = () => {
         setReport({ ...report, date: date });
     };
 
+    const submitReport = () => {
+        dispatch(actions.insertReport(report))
+        setReport({
+            name: '',
+            type: '',
+            location: '',
+            date: new Date(),
+            shiftHead: '',
+            participants: [],
+            discription: '',
+            summary: ''
+        })
+        handleClose()
+    }
     return (
-        <Grid container
-            direction="column"
-            justify="space-evenly"
-            alignItems="center">
-            <Grid item>
-                <h3>דו"ח אירוע</h3>
-            </Grid>
-            <Grid item>
-                <TextField
-                    id="standard"
-                    label="שם אירוע"
-                    name='name'
-                    value={report.name}
-                    onChange={handleChange}
-                />
-            </Grid>
-            <Grid item>
-                <TextField
-                    id="standard-basic"
-                    label="מיקום האירוע"
-                    name="location"
-                    value={report.location}
-                    onChange={handleChange}
-                />
-            </Grid>
-            <Grid item>
-                <MuiPickersUtilsProvider utils={DateFnsUtils}>
-                    <KeyboardDatePicker
-                        margin="normal"
-                        id="date-picker-dialog"
-                        label="תאריך האירוע"
-                        format="MM/dd/yyyy"
-                        value={report.date}
-                        onChange={handleDateChange}
-                        KeyboardButtonProps={{
-                            'aria-label': 'change date',
-                        }}
+        <Dialog open={open} onClose={() => handleClose()} aria-labelledby="form-dialog-title">
+            <Grid container
+                direction="column"
+                justify="space-evenly"
+                alignItems="center">
+                <Grid item>
+                    <h3>דו"ח אירוע</h3>
+                </Grid>
+                <Grid item>
+                    <TextField
+                        id="standard"
+                        label="שם אירוע"
+                        name='name'
+                        value={report.name}
+                        onChange={handleChange}
                     />
-                </MuiPickersUtilsProvider>
-            </Grid>
-            <Grid item>
-                <TextField
-                    id="standard-select-currency"
-                    select
-                    label="אחראי משמרת"
-                    name='shiftHead'
-                    value={report.shiftHead}
-                    onChange={handleChange}
-                    helperText="Please select your currency"
-                >
-                    {headShift.map((option) => (
-                        <MenuItem key={option} value={option.name}>
-                            {option.name}
-                        </MenuItem>
-                    ))}
-                </TextField>
-            </Grid>
-            <Grid item>
-                <Select
-                    labelId="demo-mutiple-checkbox-label"
-                    id="demo-mutiple-checkbox"
-                    className={classes.select}
-                    multiple
-                    name='מאבטחים משתתפים'
-                    value={report.participants}
-                    onChange={handleChange}
-                    input={<Input />}
-                    renderValue={(selected) => selected.join(', ')}
-                    MenuProps={MenuProps}
-                >
-                    {secGards.map((gard) => (
-                        <MenuItem key={gard.id} value={gard.name}>
-                            <Checkbox checked={report.participants.indexOf(gard) > -1} />
-                            <ListItemText primary={gard.name} />
-                        </MenuItem>
-                    ))}
-                </Select>
-            </Grid>
-            <Grid item>
-                <TextField
-                    id="outlined-multiline-static"
-                    label="תיאור האירוע"
-                    multiline
-                    name='discription'
-                    valie={report.discription}
-                    rows={4}
-                    variant="outlined"
-                    onChange={handleChange}
-                />
-            </Grid>
-            <Grid item>
-                <TextField
-                    id="outlined-multiline-static"
-                    label="סיכום האירוע ומסקנות"
-                    name='summary'
-                    value={report.summary}
-                    multiline
-                    rows={4}
-                    variant="outlined"
-                    onChange={handleChange}
-                />
-            </Grid>
-            <Grid item>
-                <Button
-                    variant="contained"
-                    color="primary"
-                    onClick={() => dispatch(actions.insertReport(report))}>
-                    Primary
+                </Grid>
+                <Grid item>
+                    <TextField
+                        id="standard-select-currency"
+                        select
+                        label="סוג אירוע"
+                        name='type'
+                        value={report.type}
+                        onChange={handleChange}
+                    >
+                        {events.map((option) => (
+                            <MenuItem key={option} value={option}>
+                                {option}
+                            </MenuItem>
+                        ))}
+                    </TextField>
+                </Grid>
+                <Grid item>
+                    <TextField
+                        id="standard-basic"
+                        label="מיקום האירוע"
+                        name="location"
+                        value={report.location}
+                        onChange={handleChange}
+                    />
+                </Grid>
+                <Grid item>
+                    <MuiPickersUtilsProvider utils={DateFnsUtils}>
+                        <KeyboardDatePicker
+                            margin="normal"
+                            id="date-picker-dialog"
+                            label="תאריך האירוע"
+                            format="MM/dd/yyyy"
+                            value={report.date}
+                            onChange={handleDateChange}
+                            KeyboardButtonProps={{
+                                'aria-label': 'change date',
+                            }}
+                        />
+                    </MuiPickersUtilsProvider>
+                </Grid>
+                <Grid item>
+                    <TextField
+                        id="standard-select-currency"
+                        select
+                        label="אחראי משמרת"
+                        name='shiftHead'
+                        value={report.shiftHead}
+                        onChange={handleChange}
+                        helperText="Please select your currency"
+                    >
+                        {headShift.map((option) => (
+                            <MenuItem key={option} value={option.name}>
+                                {option.name}
+                            </MenuItem>
+                        ))}
+                    </TextField>
+                </Grid>
+                <Grid item>
+                    <Select
+                        labelId="demo-mutiple-checkbox-label"
+                        id="demo-mutiple-checkbox"
+                        label="מאבטחים משתתפים"
+                        className={classes.select}
+                        multiple
+                        name='participants'
+                        value={report.participants}
+                        onChange={handleChange}
+                        input={<Input />}
+                        renderValue={(selected) => selected.join(', ')}
+                        MenuProps={MenuProps}
+                    >
+                        {secGards.map((gard) => (
+                            <MenuItem key={gard.id} value={gard.name}>
+                                <Checkbox checked={report.participants.indexOf(gard.name) > -1} />
+                                <ListItemText primary={gard.name} />
+                            </MenuItem>
+                        ))}
+                    </Select>
+                </Grid>
+                <Grid item>
+                    <TextField
+                        id="outlined-multiline-static"
+                        label="תיאור האירוע"
+                        multiline
+                        name='discription'
+                        valie={report.discription}
+                        rows={4}
+                        variant="outlined"
+                        onChange={handleChange}
+                    />
+                </Grid>
+                <Grid item>
+                    <TextField
+                        id="outlined-multiline-static"
+                        label="סיכום האירוע ומסקנות"
+                        name='summary'
+                        value={report.summary}
+                        multiline
+                        rows={4}
+                        variant="outlined"
+                        onChange={handleChange}
+                    />
+                </Grid>
+                <Grid item>
+                    <Button
+                        variant="contained"
+                        color="primary"
+                        onClick={submitReport}>
+                        הוסף אירוע
                 </Button>
-            </Grid>
-        </Grid >
+                </Grid>
+            </Grid >
+        </Dialog>
     )
 }
 

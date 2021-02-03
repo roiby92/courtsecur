@@ -1,18 +1,17 @@
-import React from 'react';
+import React, { useState } from 'react';
+import { useSelector, useDispatch } from 'react-redux'
 import { makeStyles } from '@material-ui/core/styles';
 import Card from '@material-ui/core/Card';
-import CardActions from '@material-ui/core/CardActions';
 import CardContent from '@material-ui/core/CardContent';
-import Button from '@material-ui/core/Button';
 import Typography from '@material-ui/core/Typography';
+import { Grid } from '@material-ui/core';
+import ClearIcon from '@material-ui/icons/Clear';
+import ReportSummery from './ReportSummery';
+import * as actions from '../../store/actions/index'
 const useStyles = makeStyles({
     root: {
-        minWidth: 275,
-    },
-    bullet: {
-        display: 'inline-block',
-        margin: '0 2px',
-        transform: 'scale(0.8)',
+        width: "333px",
+        height: '150px'
     },
     title: {
         fontSize: 14,
@@ -23,23 +22,48 @@ const useStyles = makeStyles({
 });
 const ReportCard = (props) => {
     const classes = useStyles();
+    const { report } = props
+    const [open, setOpen] = useState(false)
+    const userEmail = useSelector(state => state.auth.email)
 
-    const { report, open, handleClose } = props
+    const dispatch = useDispatch();
+    const handleOpen = () => {
+        setOpen(true)
+    }
+
+    const handleClose = () => {
+        setOpen(false)
+    }
+
+    let deleteIcon
+    if (userEmail === "sharonnoah8@gmail.com") {
+        deleteIcon = <ClearIcon onClick={() => {
+            console.log('Clicked');
+            dispatch(actions.deleteReport(report.id))
+        }} />
+    }
+    else {
+        deleteIcon = null
+    }
     return (
+        <Grid item xs={4}>
+            <Card className={classes.root} >
+                <CardContent onClick={handleOpen}>
+                    <Typography className={classes.title} color="textSecondary" gutterBottom>
+                        {report.name}
+                    </Typography>
+                    <Typography variant="h5" >
+                        {report.location}
+                    </Typography>
+                    <Typography className={classes.pos} color="textSecondary">
+                        {report.type}
+                    </Typography>
+                </CardContent>
+               {deleteIcon} 
+            </Card>
+            <ReportSummery open={open} handleClose={handleClose} report={report} />
+        </Grid>
 
-        <Card className={classes.root}>
-            <CardContent>
-                <Typography className={classes.title} color="textSecondary" gutterBottom>
-                    {report.name}
-                </Typography>
-                <Typography variant="h5" component="h2">
-                    {report.location}
-                </Typography>
-                <Typography className={classes.pos} color="textSecondary">
-                    {report.type}
-                </Typography>
-            </CardContent>
-        </Card>
     );
 }
 

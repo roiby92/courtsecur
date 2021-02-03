@@ -4,39 +4,42 @@ import Card from '@material-ui/core/Card';
 import CardContent from '@material-ui/core/CardContent';
 import Typography from '@material-ui/core/Typography';
 import { Grid } from '@material-ui/core';
+
 const useStyles = makeStyles({
     root: {
-        width: "333px",
-        height: '150px'
+        width: "250px",
+        height: '180px'
     },
     title: {
-        fontSize: 25,
+        fontSize: 14,
     },
     pos: {
         marginBottom: 12,
     },
 });
-const GardCard = (props) => {
-    const classes = useStyles();
 
-    const { gard } = props
+const PressureCard = (props) => {
+    const classes = useStyles();
+    const { pressure } = props
     return (
         <Grid item xs={4}>
             <Card className={classes.root}>
                 <CardContent>
                     <Typography className={classes.title} color="textSecondary" gutterBottom>
-                        {gard.name}
+                        {pressure.gard}
                     </Typography>
-                    <Typography variant="h5" component="h3">
-                        {gard.email}
+                    <Typography variant="h5" >
+                        {pressure.date}
                     </Typography>
                     <Typography className={classes.pos} color="textSecondary">
-                        {gard.phone}
+                        <ul>
+                            {pressure.shifts.map(s => <li key={s}>{s}</li>)}
+                        </ul>
                     </Typography>
                 </CardContent>
             </Card>
         </Grid>
-    );
+    )
 }
 
-export default GardCard;
+export default PressureCard

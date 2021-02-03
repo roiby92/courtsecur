@@ -12,8 +12,7 @@ const useStyles = makeStyles(() => ({
         display: 'flex',
     },
     content: {
-        flexGrow: 0.5,
-        marginTop: '50px',
+        marginTop: '130px',
     }
 }));
 const Layout = (props) => {

@@ -1,6 +1,7 @@
 import React, { useState } from 'react'
 import { useDispatch } from 'react-redux';
 import { Button, Grid, TextField } from '@material-ui/core';
+import Dialog from '@material-ui/core/Dialog'
 import * as actions from '../../store/actions/index'
 
 const AddNewGard = (props) => {
@@ -20,8 +21,20 @@ const AddNewGard = (props) => {
         setGard({ ...gard, [key]: value })
     };
 
+    const submitGard = () => {
+        dispatch(actions.addGard(gard))
+        setGard({
+            name: '',
+            email: '',
+            phone: '',
+            type: '',
+        })
+        handleClose()
+    }
+
     return (
-        <div>
+
+        <Dialog open={open} onClose={() => handleClose()} aria-labelledby="form-dialog-title">
             <Grid container
                 direction="column"
                 justify="space-evenly"
@@ -70,12 +83,12 @@ const AddNewGard = (props) => {
                     <Button
                         variant="contained"
                         color="primary"
-                        onClick={() => dispatch(actions.addGard(gard))}>
+                        onClick={submitGard}>
                         Add Gard
                 </Button>
                 </Grid>
             </Grid >
-        </div>
+        </Dialog>
     )
 }
 
